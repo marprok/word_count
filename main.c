@@ -22,10 +22,10 @@ void signal_handler(int signum)
 {
     if (signum == SIGTERM)
     {
-        printf("Ignoring SIGTERM!\n");
+        fprintf(stderr, "Ignoring SIGTERM!\n");
     }else if (signum == SIGINT)
     {
-        printf("Ignoring SIGINT!\n");
+        fprintf(stderr, "Ignoring SIGINT!\n");
     }
     signal(signum, signal_handler);
 }
@@ -38,7 +38,7 @@ int validate_dir(const char* path)
     struct stat st;
     if (stat(path, &st) < 0 )
     {
-        printf("error stat\n");
+        fprintf(stderr, "error stat\n");
         return 0;
     }
 
@@ -110,7 +110,7 @@ void process_file(const char* file)
     int fd = open(file, O_RDONLY);
     if (fd < 0)
     {
-        printf("open failed\n");
+        fprintf(stderr, "open failed\n");
         return;
     }
 
@@ -118,7 +118,7 @@ void process_file(const char* file)
     struct stat st;
     if (stat(file, &st) < 0 )
     {
-        printf("stat2 failed\n");
+        fprintf(stderr, "stat2 failed\n");
         close(fd);
         return;
     }
@@ -169,7 +169,7 @@ void process_file(const char* file)
             /* Start the thread */
             if (pthread_create(workers+i, NULL, thread_work, work+i) != 0)
             {
-                printf("Error creating the thread!\n");
+                fprintf(stderr, "Error creating the thread!\n");
             }
             from += count;
         }
@@ -227,7 +227,7 @@ int main(int argc, char** argv)
     /* Chech that the given name is a valid directory */
     if (!validate_dir(target))
     {
-        printf("Invalid args!\n");
+        fprintf(stderr, "Invalid args!\n");
         exit(1);
     }
 
@@ -235,17 +235,17 @@ int main(int argc, char** argv)
     out_file = open(OUT_FILE_NAME, O_CREAT | O_WRONLY | O_APPEND, 0664);
     if (out_file < 0 )
     {
-        printf("Failed to create the output file!\n");
+        fprintf(stderr, "Failed to create the output file!\n");
         exit(1);
     }
 
     pid_t parent_pid = getpid();
-    size_t file_count = count_files(argv[1]);
+    size_t file_count = count_files(target);
     /* The pids of the working processes */
     pid_t *processes = malloc(sizeof(pid_t)*file_count);
 
     /* Iterate over the directory and start the forking */
-    DIR *dir_handle = opendir(argv[1]);
+    DIR *dir_handle = opendir(target);
     struct dirent *dr = NULL;
     char rel_path[1024] = {0};
     size_t i = 0;
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
             if (!processes[i])
             {
                 /* If it is the child process */
-                sprintf(rel_path, "%s/%s", argv[1], dr->d_name);
+                sprintf(rel_path, "%s/%s", target, dr->d_name);
                 break; /* Stop forking and start working */
             }
             i++;
