@@ -1,14 +1,14 @@
 CCFLAGS = -Wall -Wextra
 LDLIBS = -lpthread
-OUTFILE = main
-OBJFILE = main.o
+OUTFILE = it21901
+OBJFILE = it21901.o
 CC = gcc
 
-main: main.o
+it21901: it21901.o
 	$(CC) -o $(OUTFILE) $(OBJFILE) $(LDLIBS)
 
-main.o: main.c
-	$(CC) $(CCFLAGS) -c main.c -o $(OBJFILE)
+it21901.o: it21901.c
+	$(CC) $(CCFLAGS) -c it21901.c -o $(OBJFILE)
 
 clean:
 	rm $(OUTFILE) $(OBJFILE)
