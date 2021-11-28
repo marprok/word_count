@@ -1,14 +1,14 @@
 CCFLAGS = -Wall -Wextra
 LDLIBS = -lpthread
-OUTFILE = it21901
-OBJFILE = it21901.o
+OUTFILE = word_count
+OBJFILE = word_count.o
 CC = gcc
 
-it21901: it21901.o
+$(OUTFILE): $(OBJFILE)
 	$(CC) -o $(OUTFILE) $(OBJFILE) $(LDLIBS)
 
-it21901.o: it21901.c
-	$(CC) $(CCFLAGS) -c it21901.c -o $(OBJFILE)
+$(OBJFILE): word_count.c
+	$(CC) $(CCFLAGS) -c word_count.c -o $(OBJFILE)
 
 clean:
 	rm $(OUTFILE) $(OBJFILE)
